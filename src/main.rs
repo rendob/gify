@@ -1,11 +1,12 @@
 use std::{error::Error, fs, path};
 
 use file::get_video_files;
-use video::get_video_info;
+use gif::make_gif;
 
 mod args;
 mod color;
 mod file;
+mod gif;
 mod video;
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -17,8 +18,13 @@ fn main() -> Result<(), Box<dyn Error>> {
     let output_dir_path = path::absolute(args.output_dir)?;
     fs::create_dir_all(&output_dir_path)?;
     for video_path in video_paths {
-        let video_info = get_video_info(&video_path)?;
-        println!("{:?}", video_info);
+        make_gif(
+            &video_path,
+            &output_dir_path,
+            args.frame_rate,
+            &args.progress_bar_color,
+            args.progress_bar_height_ratio,
+        )?;
     }
 
     Ok(())
